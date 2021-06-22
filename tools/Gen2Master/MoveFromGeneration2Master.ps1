@@ -35,13 +35,16 @@ Function Move-Generation2Master {
                 Remove-Item -Path $DestItem -Recurse
             }
             Write-Host "Copying folder: $SourceItem." -ForegroundColor Yellow
-            Copy-Item -Recurse -Path $SourceItem -Destination $DestItem
+            if (Test-Path -Path $SourceItem)
+            {
+                Copy-Item -Recurse -Path $SourceItem -Destination $DestItem
+            }
         }
         #Region Clean Local Modules
         $LocalModulesPath = Join-Path -Path (Join-Path -Path $DestPath -ChildPath 'generated') -ChildPath 'modules'
         If (Test-Path $LocalModulesPath) {
             Write-Host "Removing local modules: $LocalModulesPath." -ForegroundColor Yellow
-            Remove-Item -Path $LocalModulesPath -Recurse
+            Remove-Item -Path $LocalModulesPath -Recurse -Force
         }
         #EndRegion
         #Region copy docs
@@ -97,7 +100,7 @@ Function Move-Generation2Master {
         If ($Psd1Metadata.FunctionsToExport -Contains "*") {
             $Psd1Metadata.FunctionsToExport = ($Psd1Metadata.FunctionsToExport | Where-Object {$_ -ne "*"})
         }
-        Update-ModuleManifest -Path (Join-Path -Path $SourcePath -ChildPath "Az.$ModuleName.psd1") @Psd1Metadata
+        Update-ModuleManifest -Path $SourcePsd1Path @Psd1Metadata
         Copy-Item -Path $SourcePsd1Path -Destination $DestPsd1Path
         #EndRegion
 
@@ -128,6 +131,10 @@ Function Move-Generation2Master {
         $generateInfo.Add("autorest", ($autorest_info[$autorest_info.count - 2]).trim())
         $extensions = ls ~/.autorest
         ForEach ($ex in $extensions) {
+            if ($Null -eq $eq)
+            {
+                continue
+            }
             $info = $ex.Name.Split('@')
             $packageName = $info[1]
             $version = $info[2]
