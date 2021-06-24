@@ -131,7 +131,7 @@ Function Move-Generation2Master {
         $generateInfo.Add("autorest", ($autorest_info[$autorest_info.count - 2]).trim())
         $extensions = ls ~/.autorest
         ForEach ($ex in $extensions) {
-            if ($Null -eq $eq)
+            if ($Null -eq $ex)
             {
                 continue
             }
