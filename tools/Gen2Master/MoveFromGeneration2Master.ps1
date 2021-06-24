@@ -23,6 +23,20 @@ Function Move-Generation2Master {
         If (-not ($DestPath.Trim("\").Split("\")[-1] -eq $ModuleName)) {
             $DestPath = Join-Path -Path $DestPath -ChildPath $FolderPathRelativeToSrc
         }
+        
+        $DestParentPath = $DestPath
+        While ("" -eq $DestParentPath)
+        {
+            $DestAccountsPath = Get-ChildItem -Path $DestParentPath -Filter Accounts
+            if ($Null -eq $DestAccountsPath)
+            {
+                $DestParentPath = Split-Path -path $DestParentPath -Parent
+            }
+            else
+            {
+                Break
+            }
+        }
         #EndRegion
         If (-not (Test-Path $DestPath)) {
             New-Item -ItemType Directory -Path $DestPath -Force
@@ -88,13 +102,12 @@ Function Move-Generation2Master {
             $Psd1Metadata.GUID = $ModuleGuid
         }
         If ($Null -eq $RequiredModule) {
-            $FullDestPath = Resolve-Path -path $DestPath
-            $AccountsModulePath = [System.IO.Path]::Combine($FullDestPath, '..', 'Accounts', 'Accounts')
+            $AccountsModulePath = [System.IO.Path]::Combine($DestParentPath, 'Accounts', 'Accounts')
             $AccountsMetadata = Import-LocalizedData -BaseDirectory $AccountsModulePath -FileName "Az.Accounts.psd1"
             $RequiredModule = @(@{ModuleName = 'Az.Accounts'; ModuleVersion = $AccountsMetadata.ModuleVersion; })
         }
         Write-Host "======================================================================================"
-        Write-Host $RequiredModule
+        Write-Host $RequiredModule.Values
         Write-Host "======================================================================================"
         If ($Null -ne $RequiredModule)
         {
@@ -181,19 +194,6 @@ Function Move-Generation2Master {
         Copy-Template -SourceName Changelog.md -DestPath $DestPath -DestName Changelog.md
         #Region create a solution file for module and add the related csproj files to this solution.
         dotnet new sln -n $ModuleName -o $DestPath
-        $DestParentPath = $DestPath
-        While ("" -eq $DestParentPath)
-        {
-            $DestAccountsPath = Get-ChildItem -Path $DestParentPath -Filter Accounts
-            if ($Null -eq $DestAccountsPath)
-            {
-                $DestParentPath = Split-Path -path $DestParentPath -Parent
-            }
-            else
-            {
-                Break
-            }
-        }
         $SolutionPath = Join-Path -Path $DestPath -ChildPath $ModuleName.sln
         foreach ($DependenceCsproj in (Get-ChildItem -path $DestAccountsPath -Recurse -Filter *.csproj -Exclude *test*))
         {
