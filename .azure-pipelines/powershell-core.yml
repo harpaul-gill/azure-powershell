@@ -10,9 +10,9 @@ variables:
   Configuration: Debug
   DebugLocalBuildTasks: true
   IsGenerateBased: $[eq(variables['system.pullRequest.targetBranch'], 'generation')]
-  ${{ if eq(parameters.IsGenerateBased, true) }}:
+  ${{ if eq(variables.IsGenerateBased, true) }}:
     TimeoutInMinutes: 120
-  ${{ if ne(parameters.IsGenerateBased, true) }}:
+  ${{ if ne(variables.IsGenerateBased, true) }}:
     TimeoutInMinutes: 60
 
 trigger: none
