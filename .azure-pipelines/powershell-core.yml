@@ -24,6 +24,7 @@ jobs:
 - job: Build
   displayName: Build
   condition: succeeded()
+  timeoutInMinutes: 120
   strategy:
     matrix:
       windows:
