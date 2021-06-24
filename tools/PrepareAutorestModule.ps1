@@ -68,6 +68,8 @@ Add-Content -Path .git/info/sparse-checkout -Value "src/Accounts/"
 git pull origin main
 Move-Item -Path "$TmpFolder\src\Accounts" -Destination "$TmpFolder\Accounts"
 Copy-Item "$TmpFolder\Accounts" "$PSScriptRoot\..\src" -Recurse -Force
+Install-Module Az.Accounts -Repository PSGallery
+Import-Module Az.Accounts
 #EndRegion
 
 #Region generate the code and make the struture same with main branch.
