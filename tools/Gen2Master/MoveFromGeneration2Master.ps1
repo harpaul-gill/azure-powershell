@@ -108,6 +108,7 @@ Function Move-Generation2Master {
         }
         Write-Host "======================================================================================"
         Write-Host $RequiredModule.Values
+        Write-Host $AccountsModulePath
         Write-Host "======================================================================================"
         If ($Null -ne $RequiredModule)
         {
