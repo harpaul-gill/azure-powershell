@@ -9,11 +9,12 @@ variables:
   TestTarget: Test
   Configuration: Debug
   DebugLocalBuildTasks: true
-  IsGenerateBased: $[eq(variables['system.pullRequest.targetBranch'], 'generation')]
-  ${{ if eq(variables['system.pullRequest.targetBranch'], 'generation') }}:
-    TimeoutInMinutes: 120
-  ${{ if ne(variables['system.pullRequest.targetBranch'], 'generation') }}:
-    TimeoutInMinutes: 60
+  TimeoutInMinutes: 120
+  # IsGenerateBased: $[eq(variables['system.pullRequest.targetBranch'], 'generation')]
+  # ${{ if eq(variables['system.pullRequest.targetBranch'], 'generation') }}:
+  #   TimeoutInMinutes: 120
+  # ${{ if ne(variables['system.pullRequest.targetBranch'], 'generation') }}:
+  #   TimeoutInMinutes: 60
 
 trigger: none
 
@@ -28,7 +29,8 @@ jobs:
 - job: Build
   displayName: Build
   condition: succeeded()
-  timeoutInMinutes: ${{ variables.TimeoutInMinutes }}
+  timeoutInMinutes: 120
+  # timeoutInMinutes: ${{ variables.TimeoutInMinutes }}
   strategy:
     matrix:
       windows:
