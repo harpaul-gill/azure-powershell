@@ -24,7 +24,10 @@ jobs:
 - job: Build
   displayName: Build
   condition: succeeded()
-  timeoutInMinutes: 120
+  ${{ if eq(parameters.IsGenerateBased, true) }}:
+    timeoutInMinutes: 120
+  ${{ if ne(parameters.IsGenerateBased, false) }}:
+    timeoutInMinutes: 60
   strategy:
     matrix:
       windows:
