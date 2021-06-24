@@ -10,7 +10,7 @@ variables:
   Configuration: Debug
   DebugLocalBuildTasks: true
   TimeoutInMinutes: 120
-  # IsGenerateBased: $[eq(variables['system.pullRequest.targetBranch'], 'generation')]
+  IsGenerateBased: $[eq(variables['system.pullRequest.targetBranch'], 'generation')]
   # ${{ if eq(variables['system.pullRequest.targetBranch'], 'generation') }}:
   #   TimeoutInMinutes: 120
   # ${{ if ne(variables['system.pullRequest.targetBranch'], 'generation') }}:
